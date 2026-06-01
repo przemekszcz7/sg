@@ -16,6 +16,10 @@ import {
   Key,
   FileText,
   ExternalLink,
+  Calculator,
+  Sparkles,
+  ChevronRight,
+  Maximize2,
 } from "lucide-react";
 import { ScrollReveal } from "./components/ScrollReveal";
 
@@ -25,9 +29,61 @@ interface OpeningDay {
   isClosed: boolean;
 }
 
+interface Property {
+  id: string;
+  title: string;
+  type: "apartament" | "villa" | "dzialka";
+  location: string;
+  price: string;
+  area: string;
+  specs: string[];
+  image: string;
+  description: string;
+}
+
+const properties: Property[] = [
+  {
+    id: "prop-1",
+    title: "Apartament Parkowy Stara Grabina",
+    type: "apartament",
+    location: "okolice ul. Kajakowej, Wrocław",
+    price: "1 420 000 PLN",
+    area: "84 m²",
+    specs: ["3 pokoje", "Taras Solarny 24 m²", "Prywatna rampa rowerowa", "Instalacja smart home"],
+    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+    description: "Kameralny i prestiżowy apartament zlokalizowany w sercu najspokojniejszej części Starej Grabiny. Architektura czerpiąca z tradycji modernizmu współistnieje tu z luksusowym wyposażeniem i uderzającym panoramicznym oświetleniem z widokiem na starodrzew."
+  },
+  {
+    id: "prop-2",
+    title: "Willa Architektoniczna Pod Dębami",
+    type: "villa",
+    location: "ul. Wielkopolska, Wrocław",
+    price: "3 850 000 PLN",
+    area: "245 m²",
+    specs: ["5 pokoi", "Ogród Krajobrazowy 1200 m²", "Garaż z ładowarką EV", "Własna strefa wellness"],
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
+    description: "Willa reprezentująca unikalny poziom luksusu dedykowany najbardziej wymagającym mieszkańcom. Połączenie minimalistycznego betonu architektonicznego z pięknymi drewnianymi akcentami elewacji. Położona na rozłożystej parceli na Starej Grabinie."
+  },
+  {
+    id: "prop-3",
+    title: "Działka Inwestycyjna ze Starodrzewem",
+    type: "dzialka",
+    location: "Stara Grabina, Wrocław",
+    price: "980 000 PLN",
+    area: "1150 m²",
+    specs: ["Wydane warunki zabudowy", "Wszystkie media w drodze", "Zarządzany dojazd", "Otulenie parku"],
+    image: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1000&q=80",
+    description: "Kameralna enklawa gruntu budowlanego dająca absolutną intymność i możliwość wybudowania wymarzonej rezydencji. Działka płaska, sucha, doskonale naświetlona z majestatycznymi starymi dębami na granicy posesji."
+  }
+];
+
 export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Premium interactive states
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [activeFilter, setActiveFilter] = useState<"all" | "apartament" | "villa" | "dzialka">("all");
 
   // Track page scroll to toggle solid background of the navbar
   useEffect(() => {
@@ -113,6 +169,16 @@ export default function App() {
               O nas
             </a>
             <a
+              id="link-oferty"
+              href="#oferty"
+              onClick={(e) => handleSmoothScroll(e, "oferty")}
+              className={`text-xs tracking-[0.25em] uppercase font-light hover:opacity-100 transition-opacity duration-300 ${
+                isScrolled ? "text-brand-black/80 opacity-80" : "text-white/80 opacity-80 hover:text-white"
+              }`}
+            >
+              Oferty
+            </a>
+            <a
               id="link-godziny"
               href="#godziny"
               onClick={(e) => handleSmoothScroll(e, "godziny")}
@@ -179,6 +245,14 @@ export default function App() {
             className="text-2xl font-serif text-brand-black tracking-widest uppercase py-2 border-b border-brand-border/40"
           >
             O nas
+          </a>
+          <a
+            id="mobile-link-oferty"
+            href="#oferty"
+            onClick={(e) => handleSmoothScroll(e, "oferty")}
+            className="text-2xl font-serif text-brand-black tracking-widest uppercase py-2 border-b border-brand-border/40"
+          >
+            Oferty
           </a>
           <a
             id="mobile-link-godziny"
@@ -298,9 +372,6 @@ export default function App() {
             {/* Left Column: Context Copy */}
             <div className="lg:col-span-7 flex flex-col justify-center">
               <ScrollReveal direction="up">
-                <span className="block text-xs font-light tracking-[0.5em] text-brand-gray mb-4">
-                  PRESTIŻ · DOŚWIADCZENIE
-                </span>
                 <h2 className="font-serif text-4xl sm:text-5xl md:text-7xl font-thin tracking-wide text-brand-black mb-10 leading-tight">
                   Lokalni eksperci <br />
                   <span className="italic font-normal">nieruchomości</span>
@@ -412,6 +483,127 @@ export default function App() {
               </ScrollReveal>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ==================== PORTFOLIO ORAZ ESTYMACJA ==================== */}
+      <section
+        id="oferty"
+        className="py-32 md:py-48 px-6 md:px-12 bg-[#fafafa] bg-noise border-b border-brand-border/60 scroll-mt-20 overflow-hidden"
+      >
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <ScrollReveal direction="up" className="text-center mb-20">
+            <div className="w-20 h-[1px] bg-brand-border mx-auto mb-8" />
+            <span className="block text-xs font-light tracking-[0.5em] text-brand-gray mb-3 uppercase">
+              PRESTIŻOWE PORTFOLIO
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-6xl font-thin tracking-wide text-brand-black mb-6 leading-tight">
+              Wyselekcjonowane <span className="italic font-normal text-brand-black/95">oferty</span>
+            </h2>
+            <p className="text-sm font-light text-brand-gray max-w-lg mx-auto tracking-wide leading-relaxed">
+              Przeglądaj ekskluzywne rezydencje, apartamenty i tereny budowlane dostępne na Starej Grabinie. Każda nieruchomość to gwarancja najwyższej klasy.
+            </p>
+          </ScrollReveal>
+
+          {/* Filter Bar */}
+          <ScrollReveal direction="up" delay={100}>
+            <div className="flex flex-wrap justify-center gap-3 mb-16">
+              {[
+                { label: "Wszystkie", value: "all" },
+                { label: "Wille & Rezydencje", value: "villa" },
+                { label: "Apartamenty", value: "apartament" },
+                { label: "Tereny budowlane", value: "dzialka" },
+              ].map((btn) => (
+                <button
+                  key={btn.value}
+                  onClick={() => setActiveFilter(btn.value as any)}
+                  className={`px-5 py-2.5 transition-all duration-300 text-[10px] tracking-widest uppercase font-light rounded-none border cursor-pointer ${
+                    activeFilter === btn.value
+                      ? "bg-brand-black border-brand-black text-white"
+                      : "bg-white border-brand-border text-brand-black hover:border-brand-gray"
+                  }`}
+                >
+                  {btn.label}
+                </button>
+              ))}
+            </div>
+          </ScrollReveal>
+
+          {/* Properties Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+            {properties
+              .filter((p) => activeFilter === "all" || p.type === activeFilter)
+              .map((property, idx) => (
+                <ScrollReveal
+                  key={property.id}
+                  direction="up"
+                  delay={150 + idx * 100}
+                  className="flex flex-col group bg-white border border-brand-border hover:shadow-[0_20px_50px_rgba(0,0,0,0.03)] transition-all duration-500"
+                >
+                  {/* Image container */}
+                  <div className="relative overflow-hidden aspect-[4/3] bg-brand-light">
+                    <img
+                      src={property.image}
+                      alt={property.title}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover grayscale contrast-110 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+                    
+                    {/* Badge */}
+                    <span className="absolute top-4 left-4 bg-brand-black text-white text-[9px] uppercase tracking-[0.2em] font-light px-3 py-1.5">
+                      {property.type === "villa" ? "Willa" : property.type === "apartament" ? "Apartament" : "Działka"}
+                    </span>
+                  </div>
+
+                  {/* Body Content */}
+                  <div className="p-8 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3 text-[10px] text-brand-gray tracking-widest uppercase">
+                        <MapPin className="w-3 h-3 stroke-[1.25]" />
+                        <span>{property.location}</span>
+                      </div>
+                      <h3 className="font-serif text-xl font-light text-brand-black mb-4 group-hover:text-brand-black/80 transition-colors duration-300 line-clamp-1">
+                        {property.title}
+                      </h3>
+                      <p className="text-xs text-brand-gray/90 font-light leading-relaxed mb-6 line-clamp-2">
+                        {property.description}
+                      </p>
+
+                      {/* Info specifications list */}
+                      <div className="grid grid-cols-2 gap-y-2 gap-x-4 border-t border-b border-brand-border/60 py-4 mb-6">
+                        {property.specs.slice(0, 2).map((s, sidx) => (
+                          <div key={sidx} className="flex items-center gap-2 text-[11px] text-brand-dark/80 font-light">
+                            <span className="w-1 h-1 bg-brand-gray rounded-full" />
+                            <span>{s}</span>
+                          </div>
+                        ))}
+                        <div className="flex items-center gap-2 text-[11px] text-brand-dark/80 font-light">
+                          <span className="w-1 h-1 bg-brand-gray rounded-full" />
+                          <span>Metraż: {property.area}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-[9px] uppercase tracking-[0.15em] text-brand-gray">Sugerowana wartość</span>
+                        <span className="font-mono text-sm tracking-wide text-brand-black font-light">{property.price}</span>
+                      </div>
+                      <button
+                        onClick={() => setSelectedProperty(property)}
+                        className="inline-flex items-center gap-1 text-[10px] tracking-[0.2em] uppercase font-light border-b border-brand-black pb-1 hover:opacity-75 transition-opacity duration-300 cursor-pointer"
+                      >
+                        SZCZEGÓŁY
+                        <Maximize2 className="w-3 h-3 stroke-[1.25]" />
+                      </button>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              ))}
+          </div>
+
         </div>
       </section>
 
@@ -680,6 +872,105 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* ==================== SCREEN OVERLAY: PROPERTY DETAILS DRAWER ==================== */}
+      {selectedProperty && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500 cursor-pointer"
+            onClick={() => setSelectedProperty(null)}
+          />
+
+          {/* Sliding container Panel */}
+          <div className="relative w-full max-w-2xl bg-white h-screen flex flex-col shadow-2xl z-10 overflow-y-auto animate-slide-left border-l border-brand-border">
+            <button
+              onClick={() => setSelectedProperty(null)}
+              className="absolute top-6 right-6 p-2 rounded-full border border-brand-border bg-white text-brand-black hover:bg-brand-black hover:text-white transition-all duration-300 z-20 cursor-pointer"
+              aria-label="Zamknij panel"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header Image */}
+            <div className="h-72 w-full relative">
+              <img
+                src={selectedProperty.image}
+                alt={selectedProperty.title}
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover grayscale contrast-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-black/35" />
+              <div className="absolute bottom-6 left-8 text-white z-10">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-light text-white/95">Prestiżowa oferta rynkowa</span>
+                <h4 className="font-serif text-2xl font-light tracking-wide mt-2 drop-shadow-sm">{selectedProperty.title}</h4>
+              </div>
+            </div>
+
+            {/* Content Body */}
+            <div className="p-8 md:p-12 flex-1 flex flex-col justify-between">
+              <div className="space-y-8">
+                {/* Meta specification grid */}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pb-6 border-b border-brand-border">
+                  <div>
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-brand-gray block mb-1">Obszar</span>
+                    <span className="text-sm font-light text-brand-black">Stara Grabina</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-brand-gray block mb-1">Powierzchnia</span>
+                    <span className="text-sm font-mono text-brand-black font-light">{selectedProperty.area}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-brand-gray block mb-1">Cena ofertowa</span>
+                    <span className="text-sm font-mono text-brand-black font-light">{selectedProperty.price}</span>
+                  </div>
+                </div>
+
+                {/* Substantive Description text */}
+                <div className="space-y-4">
+                  <h5 className="font-serif text-lg font-light text-brand-black tracking-wide">Opis rezydencji</h5>
+                  <p className="text-sm font-light text-brand-dark/95 leading-relaxed tracking-wide">
+                    {selectedProperty.description}
+                  </p>
+                </div>
+
+                {/* Extensive specifications List */}
+                <div className="space-y-4">
+                  <h5 className="font-serif text-lg font-light text-brand-black tracking-wide">Atuty i udogodnienia premium</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {selectedProperty.specs.map((spec, i) => (
+                      <div key={i} className="flex items-center gap-3 p-3 border border-brand-border/60 bg-[#fbfbfb]">
+                        <div className="w-1.5 h-1.5 bg-brand-black rounded-full" />
+                        <span className="text-xs text-brand-dark/90 font-light">{spec}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Express Contact in details drawer */}
+              <div className="mt-12 pt-8 border-t border-brand-border">
+                <div className="bg-[#fafafa] border border-brand-border p-6 space-y-4">
+                  <span className="text-[10px] uppercase tracking-[0.25em] font-light text-brand-gray block">MASZ PYTANIA?</span>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-light text-brand-black">Opiekun oferty: <strong className="font-normal">Doradca SG Nieruchomości</strong></p>
+                      <a href="tel:603999999" className="text-base text-brand-black font-mono font-light tracking-widest block mt-1 hover:opacity-75 transition-opacity">603 999 999</a>
+                    </div>
+                    <a
+                      href={`mailto:kontakt@sg-nieruchomosci.pl?subject=Zapytanie o ofertę: ${selectedProperty.title}`}
+                      className="px-6 py-3.5 bg-brand-black text-white hover:bg-brand-gray transition-all text-xs uppercase tracking-[0.2em] font-light text-center"
+                    >
+                      Wyślij zapytanie
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );
