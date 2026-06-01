@@ -1,0 +1,6 @@
+{
+  "name": "SG Nieruchomości",
+  "description": "Obsługa nieruchomości na Starej Grabinie we Wrocławiu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
